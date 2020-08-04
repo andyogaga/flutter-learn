@@ -29,35 +29,45 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Scaffold(
+        body: OnboardingScreen(),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+var featureList = [
+  {
+    'title': 'Feature 1',
+    'description':
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    'image': 'lajldsjlfds'
+  },
+  {
+    'title': 'Feature 2',
+    'description':
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    'image': 'lajldsjlfds'
+  },
+  {
+    'title': 'Feature 3',
+    'description':
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    'image': 'lajldsjlfds'
+  },
+];
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+class OnboardingScreen extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  OnboardingScreenState createState() => OnboardingScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 6;
+class OnboardingScreenState extends State<OnboardingScreen> {
+  int _featureIndex = 0;
 
-  void _incrementCounter() {
+  void _setPosition(int position) {
     setState(() {
-      _counter++;
+      _featureIndex = position;
     });
   }
 
@@ -83,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Column(
                     children: <Widget>[
                       CustomText(
-                        'Feature 1',
+                        featureList[_featureIndex]['title'],
                         fontSize: 24,
                       ),
                       Padding(
@@ -92,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           horizontal: 15,
                         ),
                         child: CustomText(
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                          featureList[_featureIndex]['description'],
                           fontSize: 16,
                           textAlign: TextAlign.center,
                         ),
@@ -102,16 +112,20 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Circle(),
-                            Circle(),
-                            Circle(),
-                          ],
+                          children: featureList.asMap().entries.map((feature) {
+                            return Circle(
+                                filled: feature.key == _featureIndex,
+                                setPosition: () {
+                                  _setPosition(feature.key);
+                                });
+                          }).toList(),
                         ),
                       ),
                       OutlineButton(
                         child: CustomText(
-                          'SKIP INTRO',
+                          _featureIndex == featureList.length - 1
+                              ? 'CONTINUE'
+                              : 'SKIP INTRO',
                           fontWeight: FontWeight.bold,
                         ),
                         onPressed: null,
